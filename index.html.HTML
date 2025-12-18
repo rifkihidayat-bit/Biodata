@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login & Biodata Mahasiswa</title>
+    <style>
+        :root {
+            --bg1: #159ce5;
+            --bg2: #34a9f6;
+            --card-bg: rgba(56, 230, 204, 0.95);
+            --accent: #4f9cefdb;
+            --success: #27ae60;
+            --danger: #e74c3c;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg1), var(--bg2));
+            padding: 24px;
+        }
+
+        .card {
+            width: 420px;
+            max-width: 100%;
+            background: var(--card-bg);
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            padding: 22px;
+        }
+
+        h1 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            color: #222;
+            text-align: center;
+        }
+
+        p.lead {
+            margin: 0 0 18px 0;
+            color: #444;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        label {
+            font-size: 13px;
+            color: #333
+        }
+
+        input,
+        select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(45, 156, 219, 0.08)
+        }
+
+        .row {
+            display: flex;
+            gap: 10px
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 0;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button.secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(241, 127, 14, 0.25)
+        }
+
+        .small {
+            font-size: 13px;
+            color: #666
+        }
+
+        .center {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center
+        }
+
+        .hidden {
+            display: none
+        }
+
+        .msg {
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 13px
+        }
+
+        .msg.success {
+            background: rgba(39, 174, 96, 0.12);
+            color: var(--success)
+        }
+
+        .msg.error {
+            background: rgba(231, 76, 60, 0.08);
+            color: var(--danger)
+        }
+
+        /* profile style */
+        .profile-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0
+        }
+
+        .muted {
+            color: #666;
+            font-size: 13px
+        }
+
+        footer {
+            margin-top: 12px;
+            text-align: center;
+            color: #444;
+            font-size: 13px
+        }
+
+        @media (max-width:480px) {
+            .card {
+                padding: 16px
+            }
+        }
+
+        .profile-item {
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.25);
+        }
+
+        .profile-item strong {
+            font-size: 14px;
+            color: #222;
+        }
+
+        .profile-value {
+            font-size: 15px;
+            color: #444;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card" id="app">
+        <!-- LOGIN VIEW -->
+        <div id="view-login">
+            <h1>Masuk</h1>
+            <p class="lead">Gunakan username dan kata sandi.</p>
+            <div id="login-msg" class="msg hidden"></div>
+            <form id="login-form">
+                <label for="login-username">Username</label>
+                <input id="login-username" type="text" required placeholder="Username Anda">
+
+                <label for="login-password">Kata sandi</label>
+                <input id="login-password" type="password" required placeholder="Kata sandi">
+
+                <div class="row">
+                    <button type="submit" style="background:#ff7b00">Masuk</button>
+                    <button type="button" id="to-register" class="secondary">Daftar</button>
+                </div>
+            </form>
+            <footer>Penyimpanan lokal browser.</footer>
+        </div>
+
+        <!-- REGISTER / BIODATA VIEW -->
+        <div id="view-register" class="hidden">
+            <h1>Daftar & Isi Biodata</h1>
+            <p class="lead">Isi biodata, username, dan upload foto profil.</p>
+
+            <div id="register-msg" class="msg hidden"></div>
+
+            <form id="register-form" enctype="multipart/form-data">
+                <label>Foto Profil</label>
+                <input id="foto" type="file" accept="image/*">
+
+                <label for="username">Username</label>
+                <input id="username" type="text" required placeholder="Username Anda">
+
+                <label for="nama">Nama lengkap</label>
+                <input id="nama" type="text" required placeholder="Nama Anda">
+
+                <label for="nim">NIM</label>
+                <input id="nim" type="text" required placeholder="NIM">
+
+                <label for="jurusan">Jurusan</label>
+                <select id="jurusan" required>
+                    <option value="">-- Pilih jurusan --</option>
+                    <option>Teknik Informatika</option>
+                    <option>Sistem Informasi</option>
+                    <option>Manajemen</option>
+                    <option>Akuntansi</option>
+                    <option>Desain Komunikasi Visual</option>
+                    <option>Hukum</option>
+                </select>
+
+                <label for="hp">Nomor HP</label>
+                <input id="hp" type="tel" required placeholder="08xxxxxxxxxx">
+
+                <label for="password">Kata sandi</label>
+                <input id="password" type="password" required placeholder="Minimal 6 karakter">
+
+                <div class="row">
+                    <button id="register-btn" type="submit" style="background:#ff7b00">Daftar & Simpan</button>
+                    <button type="button" id="to-login" class="secondary">Kembali ke Masuk</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PROFILE VIEW -->
+        <div id="view-profile" class="hidden">
+            <h1>Profil Anda</h1>
+            <p class="lead">Berikut biodata yang tersimpan.</p>
+            <div id="profile-content">
+                <!-- isi lewat JS -->
+            </div>
+            <div class="row" style="margin-top:12px">
+                <button id="logout">Keluar</button>
+                <button id="edit" class="secondary">Edit Biodata</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Simple client-side "database" using localStorage
+        const LS_KEY = 'users_demo_v2'; // stores object: { username: {foto, username, nama, nim, jurusan, hp, password} }
+
+        function loadUsers() {
+            try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); }
+            catch (e) { return {}; }
+        }
+        function saveUsers(obj) { localStorage.setItem(LS_KEY, JSON.stringify(obj)); }
+
+        // Helpers
+        const $ = id => document.getElementById(id);
+        function show(viewId) { ['view-login', 'view-register', 'view-profile'].forEach(id => { const el = $(id); if (!el) return; el.classList.toggle('hidden', id !== viewId); }); }
+        function showMsg(id, text, type = 'success') { const el = $(id); if (!el) return; el.textContent = text; el.className = 'msg ' + (type === 'error' ? 'error' : 'success'); el.classList.remove('hidden'); }
+        function clearMessages() { ['login-msg', 'register-msg'].forEach(id => { const el = $(id); if (el) { el.classList.add('hidden'); el.textContent = ''; } }); }
+        function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+        function toBase64(file) { return new Promise((resolve, reject) => { const r = new FileReader(); r.onload = () => resolve(r.result); r.onerror = () => reject('Gagal membaca file'); r.readAsDataURL(file); }); }
+
+        // Initial view
+        show('view-login');
+
+        // Navigation buttons
+        $('to-register').addEventListener('click', () => { resetRegisterForm(); show('view-register'); clearMessages(); });
+        $('to-login').addEventListener('click', () => { resetRegisterForm(); show('view-login'); clearMessages(); });
+
+        // Register handler (create or update depending on mode)
+        let editMode = false; // when true, we're editing existing user
+        let editingUsername = null;
+
+        function resetRegisterForm() { editMode = false; editingUsername = null; $('register-form').reset(); $('username').disabled = false; }
+
+        $('register-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const fotoFile = $('foto').files[0];
+            const username = $('username').value.trim();
+            const nama = $('nama').value.trim();
+            const nim = $('nim').value.trim();
+            const jurusan = $('jurusan').value;
+            const hp = $('hp').value.trim();
+            const password = $('password').value;
+
+            if (password.length < 6) { showMsg('register-msg', 'Kata sandi minimal 6 karakter', 'error'); return; }
+            if (!/^[0-9]+$/.test(nim)) { showMsg('register-msg', 'NIM hanya boleh angka', 'error'); return; }
+            if (!/^08[0-9]{6,}$/.test(hp)) { showMsg('register-msg', 'Nomor HP mulai dengan 08 dan cukup panjang', 'error'); return; }
+            if (username.length < 3) { showMsg('register-msg', 'Username minimal 3 karakter', 'error'); return; }
+
+            const users = loadUsers();
+
+            if (editMode) {
+                // update existing user
+                const user = users[editingUsername];
+                if (!user) { showMsg('register-msg', 'Pengguna tidak ditemukan untuk diedit', 'error'); return; }
+                let fotoBase64 = user.foto || '';
+                if (fotoFile) fotoBase64 = await toBase64(fotoFile);
+                users[editingUsername] = { foto: fotoBase64, username: editingUsername, nama, nim, jurusan, hp, password };
+                saveUsers(users);
+                showMsg('register-msg', 'Perubahan disimpan', 'success');
+                setTimeout(() => { showProfile(users[editingUsername]); show('view-profile'); clearMessages(); }, 800);
+                return;
+            }
+
+            // new registration
+            if (users[username]) { showMsg('register-msg', 'Username sudah digunakan, pilih lain', 'error'); return; }
+            if (!fotoFile) { showMsg('register-msg', 'Silakan upload foto profil', 'error'); return; }
+
+            const fotoBase64 = await toBase64(fotoFile);
+            users[username] = { foto: fotoBase64, username, nama, nim, jurusan, hp, password };
+            saveUsers(users);
+            showMsg('register-msg', 'Pendaftaran berhasil! Silakan masuk.', 'success');
+            setTimeout(() => { resetRegisterForm(); show('view-login'); clearMessages(); }, 900);
+        });
+
+        // Login handler
+        $('login-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const username = $('login-username').value.trim();
+            const password = $('login-password').value;
+            const users = loadUsers();
+            if (!users[username] || users[username].password !== password) { showMsg('login-msg', 'Username atau kata sandi salah', 'error'); return; }
+            showProfile(users[username]);
+            show('view-profile');
+            clearMessages();
+        });
+
+        function showProfile(user) {
+            const root = $('profile-content');
+            root.innerHTML = `
+        <div style="text-align:center;margin-bottom:18px">
+          <img src="${user.foto || ''}" alt="Foto profil"
+               style="width:120px;height:120px;border-radius:50%;
+               object-fit:cover;border:3px solid #fff;
+               box-shadow:0 0 10px rgba(0,0,0,0.2)">
+        </div>
+
+        <div class="profile-item">
+            <strong>Username</strong>
+            <div class="profile-value">${escapeHtml(user.username)}</div>
+        </div>
+
+        <div class="profile-item">
+            <strong>Nama Lengkap</strong>
+            <div class="profile-value">${escapeHtml(user.nama)}</div>
+        </div>
+
+        <div class="profile-item">
+            <strong>NIM</strong>
+            <div class="profile-value">${escapeHtml(user.nim)}</div>
+        </div>
+
+        <div class="profile-item">
+            <strong>Jurusan</strong>
+            <div class="profile-value">${escapeHtml(user.jurusan)}</div>
+        </div>
+
+        <div class="profile-item">
+            <strong>Nomor HP</strong>
+            <div class="profile-value">${escapeHtml(user.hp)}</div>
+        </div>
+    `;
+
+            sessionStorage.setItem('logged_in_user', user.username);
+        }
+
+
+        // Logout
+        $('logout').addEventListener('click', () => { sessionStorage.removeItem('logged_in_user'); show('view-login'); });
+
+        // Edit biodata
+        $('edit').addEventListener('click', () => {
+            const username = sessionStorage.getItem('logged_in_user');
+            if (!username) return show('view-login');
+            const users = loadUsers();
+            const user = users[username];
+            if (!user) return show('view-login');
+
+            // prefill form and switch to edit mode
+            editMode = true;
+            editingUsername = username;
+            show('view-register');
+            $('username').value = user.username; $('username').disabled = true;
+            $('nama').value = user.nama || '';
+            $('nim').value = user.nim || '';
+            $('jurusan').value = user.jurusan || '';
+            $('hp').value = user.hp || '';
+            $('password').value = user.password || '';
+            // note: foto input left empty; if user wants to replace, they can choose a file
+            clearMessages();
+        });
+
+        // On load, if logged in
+        window.addEventListener('load', () => {
+            const username = sessionStorage.getItem('logged_in_user');
+            if (username) { const users = loadUsers(); if (users[username]) { showProfile(users[username]); show('view-profile'); } }
+        });
+    </script>
+</body>
+
+</html>
